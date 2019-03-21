@@ -1,3 +1,5 @@
+import java.util.Collections;
+import java.util.ArrayList;
 /*
 Universidad del valle de Guatemala
 Saul Contreras
@@ -8,19 +10,19 @@ Tomado de https://www.baeldung.com/java-binary-tree
 */
 public class BinaryTree {
  
-    Node root;
+    Node root = null;
  
     private Node addRecursive(Node current, Association value) {
     	if (current == null) {
-        	return new Node(value);
+        	root =  new Node(value);
+        	return root;
     	}
  
-    	if (value < current.value) {
+    	if (value.getEnglish().compareTo(current.value.getEnglish())<0) {
        		current.left = addRecursive(current.left, value);
-    	} else if (value > current.value) {
+    	} else if (value.getEnglish().compareTo(current.value.getEnglish())>0) {
         	current.right = addRecursive(current.right, value);
     	} else {
-        // value already exists
     	    return current;
 	    }
  
@@ -30,4 +32,54 @@ public class BinaryTree {
 	public void add(Association value) {
     	root = addRecursive(root, value);
 	}
+
+	private String containsNodeRecursive(Node current, String value) {
+ 		if (current == null) {
+    	    return "*"+value+"*";
+ 	 	} 
+    	if (value.equals(current.value.getEnglish()) ) {
+        	return current.value.getSpanish();
+    	} 
+    	return value.compareTo(current.value.getEnglish())<0 
+      	? containsNodeRecursive(current.left, value)
+      	: containsNodeRecursive(current.right, value);
+	}
+
+	private String containsKeyRecursive(Node current, String value) {
+		if (current == null) {
+			return "*"+value+"*";
+		}
+		if (value.equals(current.value.getEnglish()) ) {
+			return current.value.getEnglish();
+		}
+		return value.compareTo(current.value.getEnglish())<0
+				? containsNodeRecursive(current.left, value)
+				: containsNodeRecursive(current.right, value);
+	}
+
+	public String containsNode(String value) {
+ 	   return containsNodeRecursive(root, value);
+	}
+
+	public String containsKey(String value) {
+		return containsKeyRecursive(root, value);
+	}
+
+	public String traversePreOrder(Node node) {
+    String retorno  = "";
+    if (node != null) {
+        retorno = retorno  + node.value.getEnglish() + " , " + node.value.getSpanish() + ".\n" + traversePreOrder(node.left) + traversePreOrder(node.right);
+    }
+    return  retorno;
+	}
+
+	public String getAllKeys(Node node) {
+		String retorno  = "";
+		if (node != null) {
+			retorno = retorno  + node.value.getEnglish() + "," + getAllKeys(node.left) + getAllKeys(node.right);
+		}
+		return  retorno;
+	}
+
+
 }

@@ -15,15 +15,15 @@ import javax.swing.text.MaskFormatter;
 
 public class Main extends JFrame implements ActionListener{
 
-	private JButton ordenar = new JButton("Ordenar");
-	private JButton traducir = new JButton("Traducir");
+	private JButton ordenar = new JButton("ordenar");
+	private JButton traducir = new JButton("traducir");
 	private JTextArea texto = new JTextArea();
 	private JTextArea  ordenado = new JTextArea();//nos dice el map preferido
 	private JScrollPane scroll1;
 	private JScrollPane scroll2;
 	private Panel panelEntrada, panelSalida;
 	private JPanel panelDeLaVentana;
-	private BinaryTree<Association> tree = new BinaryTree<Association>()
+	private BinaryTree tree = new BinaryTree();
 
 	public static void main(String[] args) {
 		/*Imprimimos la ventana en la pantalla*/
@@ -40,8 +40,10 @@ public class Main extends JFrame implements ActionListener{
 		//Necesitamos realizar este proceso ya que es necesario para la interfaz grafica
 		ordenar.setActionCommand("ordenar");
 		traducir.setActionCommand("traducir");
-	
-		ordenado.setPreferredSize(new Dimension(400,250));//dimensiones
+		ordenar.addActionListener(this);
+		traducir.addActionListener(this);
+
+        ordenado.setPreferredSize(new Dimension(400,250));//dimensiones
 		texto.setPreferredSize(new Dimension(400,250));//dimensiones
 		scroll1 = new JScrollPane(texto);
 		scroll1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -68,13 +70,8 @@ public class Main extends JFrame implements ActionListener{
             );
             lines.forEach(s ->{
                 String[] lista = s.split(",");
-                System.out.println(lista[0]);
-                System.out.println(lista[1]);
                 Association association = new Association(lista[0],lista[1]);
-                BinaryTree<Association> newtre = new BinaryTree<Association>(association);
-                if(tree.getValue()==null){
-                    tree=newtre;
-                }
+                tree.add(association);
             });
         }catch (IOException exception){
             System.out.println("Error");
@@ -84,10 +81,26 @@ public class Main extends JFrame implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		if("ordenar".equals((e.getActionCommand()))){
-			//Mostrar ordenado
+			ordenado.setText(tree.traversePreOrder(tree.root));
 		}
 		else if("traducir".equals((e.getActionCommand()))){
-			//Traducir texto.txt
+            try {
+                Stream<String> lines = Files.lines(
+                        Paths.get("texto.txt"),//Leemos el archivo
+                        StandardCharsets.UTF_8
+                );
+                lines.forEach(s ->{
+                    String allString = tree.getAllKeys(tree.root);
+                    String [] allStrings = allString.split(",");
+                    for(int i=0;i<allStrings.length;i++){
+                        s = s.toLowerCase();
+                        String retorno = s.replaceAll(allStrings[i],tree.containsNode(allStrings[i]));
+                        texto.setText(retorno);
+                    }
+                });
+            }catch (IOException exception){
+                System.out.println("Error");
+            }
 		}
 	}
 }
