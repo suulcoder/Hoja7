@@ -5,10 +5,10 @@ Michele Benvenuto
 Hoja 7*/
 class Association{
 	
-	private englishWord;
-	private spanishWord;
+	private String englishWord;
+	private String spanishWord;
 
-	public Association(String englishWord, String englishWord){
+	public Association(String englishWord, String spanishWord){
 		this.englishWord=englishWord;
 		this.spanishWord=spanishWord;
 	}

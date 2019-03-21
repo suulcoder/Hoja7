@@ -89,7 +89,7 @@ public class BinaryTree<E>
 	public boolean isLeftChild()
 	// post: returns true if this is a left child of parent
 	
-	public E value()
+	public E getValue()
 	// post: returns value associated with this node
 	{
 		return val;
