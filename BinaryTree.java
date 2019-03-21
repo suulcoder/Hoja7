@@ -4,7 +4,6 @@ Saul Contreras
 Michele Benvenuto
 Hoja 7
 
-
 Tomado de ejemplo proporcionado en clase*/
 public class BinaryTree<E>
 {
@@ -46,9 +45,15 @@ public class BinaryTree<E>
 		return left;
 	}
 	
-	public BinaryTree<E> parent()
+	public BinaryTree<E> parent(){
 	// post: returns reference to parent node, or null
-	
+		return parent;
+	}
+
+	public BinaryTree<E> right(){
+		return right;
+	}
+
 	public void setLeft(BinaryTree<E> newLeft)
 	// post: sets left subtree to newLeft
 	// re-parents newLeft if not null
@@ -59,6 +64,17 @@ public class BinaryTree<E>
 		left.setParent(this);
 	}
 	
+
+	public void setRight(BinaryTree<E> newRight)
+	// post: sets left subtree to newLeft
+	// re-parents newLeft if not null
+	{
+		if (isEmpty()) return;
+		if (right != null && right.parent() == this) right.setParent(null);
+		right = right;
+		right.setParent(this);
+	}
+
 	protected void setParent(BinaryTree<E> newParent)
 	// post: re-parents this node to parent reference, or null
 	{
@@ -83,6 +99,5 @@ public class BinaryTree<E>
 	// post: sets the value associated with this node
 	{
 		val = value;
-	}
-	
+	}	
 }
