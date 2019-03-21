@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="31a6e641-c887-40ca-8f4e-55195a781d59" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Association.java" beforeDir="false" afterPath="$PROJECT_DIR$/Association.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BinaryTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/BinaryTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/diccionario.txt" beforeDir="false" afterPath="$PROJECT_DIR$/diccionario.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
