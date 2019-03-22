@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Stream;
 import javax.swing.*;
 import java.awt.*;
@@ -46,7 +47,7 @@ public class Main extends JFrame implements ActionListener{
         ordenado.setPreferredSize(new Dimension(400,250));//dimensiones
 		texto.setPreferredSize(new Dimension(400,250));//dimensiones
 		scroll1 = new JScrollPane(texto);
-		scroll1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scroll2 = new JScrollPane(ordenado);
 		scroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
@@ -79,9 +80,32 @@ public class Main extends JFrame implements ActionListener{
 
 	}
 
+	private void gnomeSort( String[] theArray ) {
+		for ( int index = 1; index < theArray.length; ) {
+			if ( theArray[index - 1].compareTo(theArray[index])<=0) {
+				++index;
+			} else {
+				String tempVal = theArray[index];
+				theArray[index] = theArray[index - 1];
+				theArray[index - 1] = tempVal;
+				--index;
+				if ( index == 0 ) {
+					index = 1;
+				}
+			}
+		}
+	}
+
 	public void actionPerformed(ActionEvent e){
 		if("ordenar".equals((e.getActionCommand()))){
-			ordenado.setText(tree.traversePreOrder(tree.root));
+			String data = tree.traversePreOrder(tree.root);
+			String[] lista = data.split("\n");
+			gnomeSort(lista);
+			String retorno = "Data:\n";
+			for(int i=0;i<lista.length;i++){
+				retorno = retorno + "\t" + lista[i] + "\n";
+			}
+			ordenado.setText(retorno);
 		}
 		else if("traducir".equals((e.getActionCommand()))){
             try {
@@ -92,11 +116,17 @@ public class Main extends JFrame implements ActionListener{
                 lines.forEach(s ->{
                     String allString = tree.getAllKeys(tree.root);
                     String [] allStrings = allString.split(",");
-                    for(int i=0;i<allStrings.length;i++){
-                        s = s.toLowerCase();
-                        String retorno = s.replaceAll(allStrings[i],tree.containsNode(allStrings[i]));
-                        texto.setText(retorno);
+                    String[] textToTranslate = s.split(" ");
+                    String retorno = "";
+                    for(int j=0;j<textToTranslate.length;j++){
+                        retorno = retorno + '"'+textToTranslate[j]+'"' + " ";
                     }
+                    for(int i=0;i<allStrings.length;i++){
+                        retorno = retorno.toLowerCase();
+                        retorno = retorno.replaceAll('"'+allStrings[i]+'"',tree.containsNode(allStrings[i]));
+
+                    }
+                    texto.setText(retorno);
                 });
             }catch (IOException exception){
                 System.out.println("Error");

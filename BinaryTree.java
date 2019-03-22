@@ -47,7 +47,7 @@ public class BinaryTree {
 
 	private String containsKeyRecursive(Node current, String value) {
 		if (current == null) {
-			return "*"+value+"*";
+			return value;
 		}
 		if (value.equals(current.value.getEnglish()) ) {
 			return current.value.getEnglish();
@@ -59,6 +59,22 @@ public class BinaryTree {
 
 	public String containsNode(String value) {
  	   return containsNodeRecursive(root, value);
+	}
+
+	public Boolean contains(String value){
+		return containsRecursive(root, value);
+	}
+
+	private Boolean containsRecursive(Node current, String value) {
+		if (current == null) {
+			return false;
+		}
+		if (value.equals(current.value.getEnglish()) ) {
+			return true;
+		}
+		return value.compareTo(current.value.getEnglish())<0
+				? containsRecursive(current.left, value)
+				: containsRecursive(current.right, value);
 	}
 
 	public String containsKey(String value) {
