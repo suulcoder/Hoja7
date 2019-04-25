@@ -1,4 +1,12 @@
- class RBTree
+/*
+Universidad del valle de Guatemala
+Saul Contreras
+Michele Benvenuto
+Hoja 9
+
+Tomado de https://www.sanfoundry.com/java-program-implement-binary-tree/
+*/
+ class RBTree implements MyTree
 
  {
 
@@ -63,7 +71,7 @@
 
      /* Make the tree logically empty */
 
-     public void makeEmpty()
+     public void clear()
 
      {
 
@@ -115,10 +123,12 @@
 
              parent.left = current;
 
-         else
+         else if (item.compareTo(parent.element)>0)
 
              parent.right = current;        
 
+		 else
+			return;
          handleReorient( item );
 
      }
@@ -289,23 +299,23 @@
 
      }
 
-	 public String containsNode(String val)
+	 public String containsNode(String ele)
 
      {
 
-         return containsNodeRecursive(header.right, val);
+         return containsNodeRecursive(header.right, ele);
 
      }
 
 	 private String containsNodeRecursive(RedBlackNode current, String value)
      {
-		if (current == null) {
+		if (current == nullNode) {
     	    return '"'+value+'"';
  	 	} 
     	if (value.equals(current.element.getEnglish()) ) {
 			return current.element.getSpanish();
     	} 
-    	return value.compareTo(current.element.getEnglish())>0 
+    	return value.compareTo(current.element.getEnglish())<0 
       	? containsNodeRecursive(current.left, value)
       	: containsNodeRecursive(current.right, value);
      }
@@ -386,10 +396,10 @@
 
      {
 		String retorno  = "";
-		if(r!=null){
+		if (r != nullNode) {
 			retorno = retorno  + r.element.getEnglish() + "," + getAllKeys(r.left) + getAllKeys(r.right);
 		}
-		return retorno;
+		return  retorno;
      }
 
      /* Function for postorder traversal */

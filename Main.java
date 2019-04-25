@@ -4,6 +4,7 @@ Saul Contreras
 Michele Benvenuto
 Hoja 9
 */
+import java.io.*;
 import java.io.File;
 import java.util.Map;
 import java.io.FileNotFoundException;
@@ -32,13 +33,17 @@ public class Main extends JFrame implements ActionListener{
 	private JScrollPane scroll2;
 	private Panel panelEntrada, panelSalida;
 	private JPanel panelDeLaVentana;
-	private RBTree tree = new RBTree();
+	private String[] trees = {"SplayTree","RedBlackTree"};
+	private int tree_index = 0;
+	private String tree_string = trees[tree_index];
+	private TreeFactory factory = new TreeFactory();
+	private MyTree tree = factory.getTree(tree_string);
 
 	public static void main(String[] args) {
 		/*Imprimimos la ventana en la pantalla*/
     	
     	Main miAplicacion = new Main();
-     	miAplicacion.setBounds(10,10,200,200);
+     	miAplicacion.setBounds(10,10,100,100);
     	miAplicacion.pack();
 		miAplicacion.setVisible(true);
 	}
@@ -53,13 +58,17 @@ public class Main extends JFrame implements ActionListener{
 		ordenar.addActionListener(this);
 		traducir.addActionListener(this);
 
-        ordenado.setPreferredSize(new Dimension(400,250));																		//dimensiones
-		texto.setPreferredSize(new Dimension(400,250));																			//dimensiones
 		arbol.setPreferredSize(new Dimension(150,20));	
 		scroll1 = new JScrollPane(texto);
-		scroll1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		scroll1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll2 = new JScrollPane(ordenado);
-		scroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		scroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		ordenado.setPreferredSize(new Dimension(900,900));																		//dimensiones
+		texto.setPreferredSize(new Dimension(900,900));																			//dimensiones
+		arbol.setText(tree_string);
+		ordenado.setBounds(10,50,400,300);
+		texto.setBounds(10,50,400,300);
 
 		panelDeLaVentana = (JPanel)this.getContentPane();
 		panelEntrada = new Panel();																								//los siguientes paneles son para poner orden y estetica
@@ -74,21 +83,6 @@ public class Main extends JFrame implements ActionListener{
 
 		panelDeLaVentana.add(panelEntrada,BorderLayout.NORTH);																	//agreamos las ventanas a la interfaz grafica
 		panelDeLaVentana.add(panelSalida,BorderLayout.SOUTH);
-		
-		try {
-            Stream<String> lines = Files.lines(
-                    Paths.get("diccionario.txt"),																				//Leemos el archivo
-                    StandardCharsets.UTF_8
-            );
-            lines.forEach(s ->{
-                String[] lista = s.split(",");
-                Association association = new Association(lista[0],lista[1]);
-                tree.insert(association);
-            });
-        }catch (IOException exception){
-            System.out.println("Error");
-		}
-
 	}
 
 	private void gnomeSort( String[] theArray ) {
@@ -109,6 +103,30 @@ public class Main extends JFrame implements ActionListener{
 
 	public void actionPerformed(ActionEvent e){
 		if("ordenar".equals((e.getActionCommand()))){
+			tree.clear();
+			BufferedReader br = null;
+			FileReader fr = null;
+			String output ="";
+			try {
+				fr = new FileReader("diccionario.txt");
+				br = new BufferedReader(fr);
+				while ((output = br.readLine()) != null) {
+					String[] lista = output.split("\t");
+					Association association = new Association(lista[0],lista[1]);
+					tree.insert(association);       	
+				}
+			} catch (IOException f) {
+				f.printStackTrace();
+			} finally {
+				try {
+					if (br != null)
+						br.close();
+					if (fr != null)
+						fr.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
 			String data = tree.preorder();
 			String[] lista = data.split("\n");
 			gnomeSort(lista);
@@ -117,16 +135,40 @@ public class Main extends JFrame implements ActionListener{
 				retorno = retorno + "\t" + lista[i] + "\n";
 			}
 			ordenado.setText(retorno);
+			System.out.println(retorno);
 		}
 		else if("traducir".equals((e.getActionCommand()))){
-            try {
+			tree.clear();
+            BufferedReader br = null;
+			FileReader fr = null;
+			String output ="";
+			try {
+				fr = new FileReader("diccionario.txt");
+				br = new BufferedReader(fr);
+				while ((output = br.readLine()) != null) {
+					String[] lista = output.split("\t");
+					Association association = new Association(lista[0],lista[1]);
+					tree.insert(association);       	
+				}
+			} catch (IOException f) {
+				f.printStackTrace();
+			} finally {
+				try {
+					if (br != null)
+						br.close();
+					if (fr != null)
+						fr.close();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+			try {
                 Stream<String> lines = Files.lines(
                         Paths.get("texto.txt"),																											//Leemos el archivo
                         StandardCharsets.UTF_8
                 );
                 lines.forEach(s ->{
                     String allString = tree.getAllKeys();
-					System.out.println(allString);
                     String [] allStrings = allString.split(",");
                     String[] textToTranslate = s.split(" ");
                     String retorno = "";
@@ -135,14 +177,26 @@ public class Main extends JFrame implements ActionListener{
                     }
                     for(int i=0;i<allStrings.length;i++){
                         retorno = retorno.toLowerCase();
-                        retorno = retorno.replaceAll('"'+allStrings[i]+'"',tree.containsNode(allStrings[i]));
+						String variable = tree.containsNode(allStrings[i]);
+						String[] traduccion = variable.split(",");
+                        retorno = retorno.replaceAll('"'+allStrings[i]+'"',traduccion[0]);
 
                     }
                     texto.setText(retorno);
+					System.out.println(retorno);
                 });
             }catch (IOException exception){
                 System.out.println("Error");
             }
+		}
+		else if("cambiar".equals((e.getActionCommand()))){
+			arbol.setText(tree_string);
+			tree_index++;
+			if (tree_index==2){
+	            tree_index=0;
+			}
+			tree_string = trees[tree_index];
+			tree = factory.getTree(tree_string);
 		}
 	}
 }

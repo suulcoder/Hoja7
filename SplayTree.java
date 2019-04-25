@@ -6,7 +6,7 @@ Hoja 9
 
 Tomado de https://www.sanfoundry.com/java-program-implement-splay-tree/
 */
- class SplayTree
+ class SplayTree implements MyTree
 
  {
 
@@ -56,7 +56,7 @@ Tomado de https://www.sanfoundry.com/java-program-implement-splay-tree/
 
      /** function to insert element */
 
-     public void insert(Association ele)
+     public void insert(Association item)
 
      {
 
@@ -70,19 +70,22 @@ Tomado de https://www.sanfoundry.com/java-program-implement-splay-tree/
 
              p = z;
 
-             if (ele.compareTo(p.element)<0)
+             if (item.compareTo(p.element)<0)
 
                  z = z.right;
 
-             else
+             else if (item.compareTo(p.element)>0)
 
                  z = z.left;
+
+			 else
+				return;
 
          }
 
          z = new SplayNode();
 
-         z.element = ele;
+         z.element = item;
 
          z.parent = p;
 
@@ -90,7 +93,7 @@ Tomado de https://www.sanfoundry.com/java-program-implement-splay-tree/
 
              root = z;
 
-         else if (ele.compareTo(p.element)<0)
+         else if (item.compareTo(p.element)<0)
 
              p.right = z;
 
