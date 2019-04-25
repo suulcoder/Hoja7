@@ -1,3 +1,9 @@
+/*
+Universidad del valle de Guatemala
+Saul Contreras
+Michele Benvenuto
+Hoja 9
+*/
 import java.io.File;
 import java.util.Map;
 import java.io.FileNotFoundException;
@@ -16,15 +22,17 @@ import javax.swing.text.MaskFormatter;
 
 public class Main extends JFrame implements ActionListener{
 
-	private JButton ordenar = new JButton("ordenar");
-	private JButton traducir = new JButton("traducir");
+	private JButton cambiar = new JButton("   Change Three   ");
+	private JButton ordenar = new JButton("   Order   ");
+	private JButton traducir = new JButton("   Translate   ");
 	private JTextArea texto = new JTextArea();
+	private JTextArea arbol = new JTextArea();
 	private JTextArea  ordenado = new JTextArea();//nos dice el map preferido
 	private JScrollPane scroll1;
 	private JScrollPane scroll2;
 	private Panel panelEntrada, panelSalida;
 	private JPanel panelDeLaVentana;
-	private BinaryTree tree = new BinaryTree();
+	private SplayTree tree = new SplayTree();
 
 	public static void main(String[] args) {
 		/*Imprimimos la ventana en la pantalla*/
@@ -36,43 +44,46 @@ public class Main extends JFrame implements ActionListener{
 	}
 
 	public Main(){
-		super("Hoja 6");/*Sera el nombre de la ventana*/
-
+		super("Hoja 9");/*Sera el nombre de la ventana*/
 		//Necesitamos realizar este proceso ya que es necesario para la interfaz grafica
 		ordenar.setActionCommand("ordenar");
 		traducir.setActionCommand("traducir");
+		cambiar.setActionCommand("cambiar");
+		cambiar.addActionListener(this);
 		ordenar.addActionListener(this);
 		traducir.addActionListener(this);
 
-        ordenado.setPreferredSize(new Dimension(400,250));//dimensiones
-		texto.setPreferredSize(new Dimension(400,250));//dimensiones
+        ordenado.setPreferredSize(new Dimension(400,250));																		//dimensiones
+		texto.setPreferredSize(new Dimension(400,250));																			//dimensiones
+		arbol.setPreferredSize(new Dimension(150,20));	
 		scroll1 = new JScrollPane(texto);
 		scroll1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		scroll2 = new JScrollPane(ordenado);
 		scroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
 		panelDeLaVentana = (JPanel)this.getContentPane();
-		panelEntrada = new Panel();//los siguientes paneles son para poner orden y estetica
+		panelEntrada = new Panel();																								//los siguientes paneles son para poner orden y estetica
 		panelSalida = new Panel();
 
-		panelEntrada.add(ordenar);
 		panelEntrada.add(traducir);
-
+		panelEntrada.add(ordenar);
+		panelEntrada.add(cambiar);
+		panelEntrada.add(arbol);
 		panelSalida.add(scroll1);
 		panelSalida.add(scroll2);
 
-		panelDeLaVentana.add(panelEntrada,BorderLayout.NORTH);//agreamos las ventanas a la interfaz grafica
+		panelDeLaVentana.add(panelEntrada,BorderLayout.NORTH);																	//agreamos las ventanas a la interfaz grafica
 		panelDeLaVentana.add(panelSalida,BorderLayout.SOUTH);
 		
 		try {
             Stream<String> lines = Files.lines(
-                    Paths.get("diccionario.txt"),//Leemos el archivo
+                    Paths.get("diccionario.txt"),																				//Leemos el archivo
                     StandardCharsets.UTF_8
             );
             lines.forEach(s ->{
                 String[] lista = s.split(",");
                 Association association = new Association(lista[0],lista[1]);
-                tree.add(association);
+                tree.insert(association);
             });
         }catch (IOException exception){
             System.out.println("Error");
@@ -80,27 +91,10 @@ public class Main extends JFrame implements ActionListener{
 
 	}
 
-	private void gnomeSort( String[] theArray ) {
-		for ( int index = 1; index < theArray.length; ) {
-			if ( theArray[index - 1].compareTo(theArray[index])<=0) {
-				++index;
-			} else {
-				String tempVal = theArray[index];
-				theArray[index] = theArray[index - 1];
-				theArray[index - 1] = tempVal;
-				--index;
-				if ( index == 0 ) {
-					index = 1;
-				}
-			}
-		}
-	}
-
 	public void actionPerformed(ActionEvent e){
 		if("ordenar".equals((e.getActionCommand()))){
-			String data = tree.traversePreOrder(tree.root);
+			String data = tree.preorder();
 			String[] lista = data.split("\n");
-			gnomeSort(lista);
 			String retorno = "Data:\n";
 			for(int i=0;i<lista.length;i++){
 				retorno = retorno + "\t" + lista[i] + "\n";
@@ -110,11 +104,11 @@ public class Main extends JFrame implements ActionListener{
 		else if("traducir".equals((e.getActionCommand()))){
             try {
                 Stream<String> lines = Files.lines(
-                        Paths.get("texto.txt"),//Leemos el archivo
+                        Paths.get("texto.txt"),																											//Leemos el archivo
                         StandardCharsets.UTF_8
                 );
                 lines.forEach(s ->{
-                    String allString = tree.getAllKeys(tree.root);
+                    String allString = tree.getAllKeys();
                     String [] allStrings = allString.split(",");
                     String[] textToTranslate = s.split(" ");
                     String retorno = "";

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 Universidad del valle de Guatemala
 Saul Contreras
 Michele Benvenuto
-Hoja 7
+Hoja 9
 
 Tomado de https://www.baeldung.com/java-binary-tree
 */
 public class BinaryTree {
  
     Node root = null;
- 
+ 	
     private Node addRecursive(Node current, Association value) {
     	if (current == null) {
         	root =  new Node(value);

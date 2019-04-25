@@ -2,14 +2,13 @@
 Universidad del valle de Guatemala
 Saul Contreras
 Michele Benvenuto
-Hoja 7*/
-class Association{
+Hoja 9*/
+class Association implements Comparable{
 	
 	private String englishWord;
 	private String spanishWord;
 	public static int allAssociations;
 	public int id;
-
 
 	public Association(String englishWord, String spanishWord){
 		this.englishWord=englishWord;
@@ -25,4 +24,12 @@ class Association{
 	public String getSpanish(){
 		return this.spanishWord;
 	}
+
+	public int compareTo(Object comparable){
+		if(comparable instanceof Association){
+			Association current = (Association)comparable;
+			return (this.englishWord.compareTo(current.englishWord));	
+		}
+		return 0;
+}
 }

@@ -2,7 +2,7 @@
 Universidad del valle de Guatemala
 Saul Contreras
 Michele Benvenuto
-Hoja 7
+Hoja 9
 
 Tomado de https://www.baeldung.com/java-binary-tree
 */
