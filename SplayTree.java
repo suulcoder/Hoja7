@@ -396,53 +396,25 @@ Tomado de https://www.sanfoundry.com/java-program-implement-splay-tree/
 
      }
 
-	public String containsNode(String ele)
+	 private String containsNodeRecursive(SplayNode current, String value)
 
      {
-
-    	 SplayNode PrevNode = null;
-
-         SplayNode z = root;
-
-         while (z != null)
-
-         {
-
-        	 PrevNode = z;
-
-             if (ele.compareTo(z.element.getEnglish())<0)
-
-                 z = z.right;
-
-             else if (ele.compareTo(z.element.getEnglish())>0)
-
-                 z = z.left;
-
-             else if(ele.compareTo(z.element.getEnglish())==0) {
-
-                 Splay(z);
-
-                 return z.element.getEnglish();
-
-             }
-
- 
-
-         }
-
-         if(PrevNode != null)
-
-         {
-
-             Splay(PrevNode);
-
-             return null;
-
-         }
-
-         return null;
+		if (current == null) {
+    	    return '"'+value+'"';
+ 	 	} 
+    	if (value.equals(current.element.getEnglish()) ) {
+			return current.element.getSpanish();
+    	} 
+    	return value.compareTo(current.element.getEnglish())>0 
+      	? containsNodeRecursive(current.left, value)
+      	: containsNodeRecursive(current.right, value);
 
      }
+
+	public String containsNode(String ele)
+	{
+		return containsNodeRecursive(root,ele);
+    }
 
      private SplayNode findNode(Association ele)
 

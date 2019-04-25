@@ -32,7 +32,7 @@ public class Main extends JFrame implements ActionListener{
 	private JScrollPane scroll2;
 	private Panel panelEntrada, panelSalida;
 	private JPanel panelDeLaVentana;
-	private SplayTree tree = new SplayTree();
+	private RBTree tree = new RBTree();
 
 	public static void main(String[] args) {
 		/*Imprimimos la ventana en la pantalla*/
@@ -91,10 +91,27 @@ public class Main extends JFrame implements ActionListener{
 
 	}
 
+	private void gnomeSort( String[] theArray ) {
+		for ( int index = 1; index < theArray.length; ) {
+			if ( theArray[index - 1].compareTo(theArray[index])<=0) {
+				++index;
+			} else {
+				String tempVal = theArray[index];
+				theArray[index] = theArray[index - 1];
+				theArray[index - 1] = tempVal;
+				--index;
+				if ( index == 0 ) {
+					index = 1;
+				}
+			}
+		}
+	}
+
 	public void actionPerformed(ActionEvent e){
 		if("ordenar".equals((e.getActionCommand()))){
 			String data = tree.preorder();
 			String[] lista = data.split("\n");
+			gnomeSort(lista);
 			String retorno = "Data:\n";
 			for(int i=0;i<lista.length;i++){
 				retorno = retorno + "\t" + lista[i] + "\n";
@@ -109,6 +126,7 @@ public class Main extends JFrame implements ActionListener{
                 );
                 lines.forEach(s ->{
                     String allString = tree.getAllKeys();
+					System.out.println(allString);
                     String [] allStrings = allString.split(",");
                     String[] textToTranslate = s.split(" ");
                     String retorno = "";
